@@ -1,0 +1,33 @@
+version: '3'
+
+services:
+  database:
+    image: 'postgres:13.10'
+    container_name: postgres13
+    ports:
+      - 15432:5432
+    env_file:
+      - .env
+    networks:
+      - postgres-network
+    volumes:
+      - .\db-data13\:/var/lib/postgresql/data/
+      - .\init.sql:/docker-entrypoint-initdb.d/init.sql
+  
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin4013
+    ports:
+      - 15433:80
+    env_file:
+      - .env
+    depends_on:
+      - database
+    networks:
+      - postgres-network
+    volumes:
+      - ./pgadmin-data13/:/var/lib/pgadmin/
+
+networks: 
+  postgres-network:
+    driver: bridge
